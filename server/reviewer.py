@@ -1,11 +1,22 @@
 import os
 import json
 import re
+import json
 from openai import OpenAI
 from prompts import LANE_RUBRICS, SYSTEM_RULES
 
-def extract_numbers(text: str):
-    return set(re.findall(r"\d+(?:\.\d+)?%?", text))
+def extract_numbers(x):
+    if x is None:
+        s = ""
+    elif isinstance(x, str):
+        s = x
+    else:
+        try:
+            s = json.dumps(x, ensure_ascii=False)
+        except Exception:
+            s = str(x)
+    return set(re.findall(r"\d+(?:\.\d+)?%?", s)) # convert to avoid type errors
+
 
 def _get_client() -> OpenAI:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
