@@ -185,26 +185,26 @@ export default function ResumeReviewer() {
                   Role<span className="rl-titleGlow">Lens</span>
                 </div>
                 <div className="hidden md:block rl-subtle text-sm">
-                  Lane-aware feedback with guardrails
+                  Industry specific resume reviewer, Anote AI Academy Capstone Project
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               <span className="rl-pill"><span className="rl-dot" />no fake metrics</span>
-              <span className="rl-pill hidden sm:inline-flex"><span className="rl-dot" />Frutiger-ish</span>
+              <span className="rl-pill hidden sm:inline-flex"><span className="rl-dot" />tailored to your field</span>
             </div>
           </div>
 
-          <div className="p-5 md:p-7">
-            <div className="grid gap-6 lg:grid-cols-[1.05fr_1fr]">
+          <div className="rl-windowBody p-5 md:p-7">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr]">
               {/* LEFT: INPUT */}
               <div className="rl-panel p-5 md:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="text-lg font-semibold">Reviewer</div>
                     <div className="text-sm rl-subtle">
-                      Paste 3–8 bullets or a paragraph. Pick a lane + tone.
+                      Paste a snippet of your resume or personal statement to get started. Select a lane and tone.
                     </div>
                   </div>
 
@@ -256,9 +256,9 @@ export default function ResumeReviewer() {
                   )}
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-4">
-                  <span className="rl-pill"><span className="rl-dot" />guardrails-first</span>
-                  <span className="rl-pill"><span className="rl-dot" />copy-friendly</span>
+                <div className="mt-4 flex flex-wrap items-center gap-4 rl-section">
+                  <span className="rl-pill"><span className="rl-dot" />CV/Personal Statement/Experience section</span>
+                  <span className="rl-pill"><span className="rl-dot" />copy paste friendly</span>
                   <button
                     type="button"
                     className="rl-pill"
@@ -276,7 +276,7 @@ export default function ResumeReviewer() {
                   <div>
                     <div className="text-lg font-semibold">Results</div>
                     <div className="text-sm rl-subtle">
-                      {result ? "Switch tabs to explore the output." : "Run a review to populate these tabs."}
+                      {result ? "Switch tabs to see more!" : "Run a review to populate these tabs."}
                     </div>
                   </div>
 

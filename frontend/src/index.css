@@ -33,8 +33,8 @@ body,
     --bg1: #06121f;
     --bg2: #05262d;
 
-    --glass: rgba(255, 255, 255, 0.12);
-    --glass2: rgba(255, 255, 255, 0.08);
+    --glass: rgba(120, 220, 255, 0.18);
+    --glass2: rgba(120, 219, 255, 0.5);
     --border: rgba(255, 255, 255, 0.26);
 
     --text: rgba(255, 255, 255, 0.93);
@@ -88,7 +88,11 @@ body::before {
     top: -40%;
     width: 140%;
     height: 60%;
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.28), transparent 55%);
+    opacity: 0.95;
+        background: linear-gradient(120deg,
+                rgba(255, 255, 255, 0.45),
+                rgba(120, 220, 255, 0.35),
+                transparent 60%);
     transform: rotate(-6deg);
     pointer-events: none;
     opacity: 0.7;
@@ -100,10 +104,16 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 5px;
     gap: 14px;
-    padding: 14px 18px;
+    padding: 14px 18px 18px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.18);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04));
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
+}
+.rl-windowBody {
+    margin-top: 12px;
 }
 
 .rl-traffic {
@@ -135,6 +145,7 @@ body::before {
 .rl-title {
     font-weight: 900;
     letter-spacing: -0.02em;
+    font-size: 1.8rem;
 }
 
 .rl-titleGlow {
@@ -213,6 +224,8 @@ body::before {
     color: rgba(255, 255, 255, 0.82);
     font-size: 13px;
     backdrop-filter: blur(10px);
+    margin-right: 6px;
+    margin-bottom: 6px;
 }
 
 .rl-dot {
@@ -256,8 +269,21 @@ body::before {
 
 .rl-panel {
     border-radius: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(140, 220, 255, 0.35);
+    background:
+        linear-gradient(180deg,
+            rgba(120, 220, 255, 0.14),
+            rgba(20, 40, 60, 0.45));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 12px 30px rgba(0, 140, 255, 0.18);
+    backdrop-filter: blur(14px);
+}
+.rl-section+.rl-panel {
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.10),
+        0 -12px 24px rgba(0, 120, 255, 0.18);
+}
+.rl-section {
+    margin-bottom: 8px;
 }

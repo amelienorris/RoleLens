@@ -3,9 +3,7 @@ from flask_cors import CORS
 from reviewer import review_text_openai
 from dotenv import load_dotenv
 import traceback
-
 load_dotenv()
-
 app = Flask(__name__)
 CORS(app)
 @app.route("/health")
