@@ -61,52 +61,94 @@ function Tab({ active, children, onClick }) {
     </button>
   );
 }
+function pickFirst(obj, keys) {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (typeof v === "string" && v.trim()) return v;
+  }
+  return "";
+}
+function pickFirstArray(obj, keys) {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (Array.isArray(v) && v.length) return v;
+  }
+  return [];
+}
 
 function RewriteCard({ rewrite }) {
+  if (!rewrite) return null;
+
+  // Structured object rewrite
   if (isPlainObject(rewrite)) {
-    const title = rewrite.title || "Rewrite";
-    const org = rewrite.organization || rewrite.org || "";
-    const location = rewrite.location || "";
-    const duration = rewrite.duration || "";
-    const responsibilities = Array.isArray(rewrite.responsibilities) ? rewrite.responsibilities : [];
+    const title = pickFirst(rewrite, ["position", "title", "role", "heading", "name"]) || "Rewrite";
+    const org = pickFirst(rewrite, ["organization", "org", "company", "school"]);
+    const location = pickFirst(rewrite, ["location"]);
+    const duration = pickFirst(rewrite, ["duration", "dates", "date_range"]);
+
+    const summary = pickFirst(rewrite, ["description", "summary", "experience", "overview"]);
+    const bullets = pickFirstArray(rewrite, [
+      "responsibilities",
+      "bullets",
+      "highlights",
+      "accomplishments",
+      "coursework_projects",
+      "projects",
+      "points",
+    ]);
 
     return (
-      <div className="rl-panel p-5">
+      <div className="rl-panel p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <div className="text-base font-semibold">{title}</div>
-            <div className="text-sm rl-subtle">
-              {[org, location].filter(Boolean).join(" • ")}
-            </div>
+            <div className="text-lg font-semibold">{title}</div>
+            {(org || location) && (
+              <div className="text-sm rl-subtle mt-1">
+                {[org, location].filter(Boolean).join(" • ")}
+              </div>
+            )}
+            {summary && (
+              <div className="text-sm mt-3" style={{ color: "rgba(255,255,255,0.86)" }}>
+                {summary}
+              </div>
+            )}
           </div>
+
           {duration ? (
-            <span className="rl-pill"><span className="rl-dot" />{duration}</span>
+            <span className="rl-pill">
+              <span className="rl-dot" />
+              {duration}
+            </span>
           ) : null}
         </div>
 
-        {responsibilities.length > 0 ? (
-          <ul className="mt-4 space-y-2">
-            {responsibilities.map((r, i) => (
-              <li key={i} className="text-sm" style={{ color: "rgba(255,255,255,0.84)" }}>
-                • {r}
+        {bullets.length > 0 ? (
+          <ul className="mt-5 space-y-2">
+            {bullets.map((b, i) => (
+              <li key={i} className="text-sm" style={{ color: "rgba(255,255,255,0.88)" }}>
+                • {b}
               </li>
             ))}
           </ul>
         ) : (
-          <pre className="mt-4 whitespace-pre-wrap text-sm rl-subtle">{prettyText(rewrite)}</pre>
+          <div className="mt-5 rl-subtle text-sm">
+            No bullet points returned. (Enable Dev → On to inspect the raw shape.)
+          </div>
         )}
       </div>
     );
   }
 
+  // Plain string rewrite
   return (
-    <div className="rl-panel p-5">
-      <pre className="whitespace-pre-wrap text-sm" style={{ color: "rgba(255,255,255,0.84)" }}>
+    <div className="rl-panel p-6">
+      <pre className="whitespace-pre-wrap text-sm" style={{ color: "rgba(255,255,255,0.88)" }}>
         {prettyText(rewrite)}
       </pre>
     </div>
   );
 }
+
 
 export default function ResumeReviewer() {
   const [text, setText] = useState("");
@@ -192,7 +234,7 @@ export default function ResumeReviewer() {
 
             <div className="flex items-center gap-2">
               <span className="rl-pill"><span className="rl-dot" />no fake metrics</span>
-              <span className="rl-pill hidden sm:inline-flex"><span className="rl-dot" />Frutiger-ish</span>
+              <span className="rl-pill hidden sm:inline-flex"><span className="rl-dot" />testing</span>
             </div>
           </div>
 
