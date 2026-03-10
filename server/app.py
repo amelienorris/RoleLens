@@ -15,10 +15,20 @@ def review():
     text = data.get("text", "")
     lane = data.get("lane", "SWE")
     tone = data.get("tone", "confident")
+    action = data.get("action", "")
+    follow_up = data.get("follow_up", "")
+    previous_rewrite = data.get("previous_rewrite", "")
     if not text.strip():
         return jsonify({"error": "Missing text"}), 400
     try:
-        result = review_text_openai(text, lane, tone)
+        result = review_text_openai(
+            text,
+            lane,
+            tone,
+            action=action,
+            follow_up=follow_up,
+            previous_rewrite=previous_rewrite,
+        )
         return jsonify(result)
     except Exception as e:
         traceback.print_exc()

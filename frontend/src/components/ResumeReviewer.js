@@ -117,8 +117,15 @@ export default function ResumeReviewer() {
   const [error, setError] = useState("");
   const [tab, setTab] = useState("rewrite"); // rewrite | critique | questions | safety
   const [showDev, setShowDev] = useState(false);
+  const [followUp, setFollowUp] = useState("");
+  const [lastAction, setLastAction] = useState("");
 
   const canSubmit = useMemo(() => text.trim().length > 0 && !loading, [text, loading]);
+  const canRequestRevision = useMemo(() => {
+    if (!result || loading) return false;
+    if (lastAction === "approve") return true;
+    return followUp.trim().length > 0;
+  }, [followUp, lastAction, loading, result]);
 
   // Memoize expensive stringify to reduce lag
   const devJson = useMemo(() => {
@@ -126,10 +133,8 @@ export default function ResumeReviewer() {
     return prettyText(result);
   }, [showDev, result]);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function submitReview({ action = "", followUpText = "" } = {}) {
     setError("");
-    setResult(null);
 
     if (!text.trim()) {
       setError("Paste your resume bullets or a paragraph first.");
@@ -141,7 +146,14 @@ export default function ResumeReviewer() {
       const res = await fetch("/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, lane, tone }),
+        body: JSON.stringify({
+          text,
+          lane,
+          tone,
+          action,
+          follow_up: followUpText,
+          previous_rewrite: result?.rewrite ? prettyText(result.rewrite) : "",
+        }),
       });
 
       const rawText = await res.text();
@@ -158,11 +170,31 @@ export default function ResumeReviewer() {
       const data = JSON.parse(rawText);
       setResult(data);
       setTab("rewrite");
+      if (action) {
+        setFollowUp("");
+      }
     } catch (err) {
       setError(err?.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setResult(null);
+    setLastAction("");
+    await submitReview();
+  }
+
+  async function handleApproveRewrite() {
+    setLastAction("approve");
+    await submitReview({ action: "approve", followUpText: "Please keep the facts the same and make the rewrite more polished and interview-ready." });
+  }
+
+  async function handleProvideMoreInfo() {
+    setLastAction("provide_more_info");
+    await submitReview({ action: "provide_more_info", followUpText: followUp.trim() });
   }
 
   async function copyRewrite() {
@@ -305,7 +337,53 @@ export default function ResumeReviewer() {
                 )}
 
                 {result && tab === "rewrite" && (
-                  <RewriteCard rewrite={result.rewrite} />
+                  <div className="grid gap-4">
+                    <RewriteCard rewrite={result.rewrite} />
+
+                    <div className="rl-panel p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <div className="text-sm font-semibold">Iterate on this rewrite</div>
+                          <div className="text-sm rl-subtle">
+                            Approve the direction for a cleaner pass, or provide missing details and generate another rewrite.
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            className="rl-pill"
+                            onClick={handleApproveRewrite}
+                            disabled={!result || loading}
+                          >
+                            <span className="rl-dot" />Approve rewrite
+                          </button>
+                          <button
+                            type="button"
+                            className="rl-btn"
+                            onClick={handleProvideMoreInfo}
+                            disabled={!canRequestRevision || !followUp.trim()}
+                          >
+                            {loading && lastAction === "provide_more_info" ? "Rewriting..." : "Use more info"}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 grid gap-2">
+                        <span className="text-xs rl-subtle">Follow-up details</span>
+                        <textarea
+                          className="rl-input"
+                          style={{ minHeight: "120px", resize: "vertical" }}
+                          placeholder="Add missing metrics, tools, ownership, target role, or answer one of the review questions..."
+                          value={followUp}
+                          onChange={(e) => setFollowUp(e.target.value)}
+                        />
+                        <div className="text-xs rl-subtle">
+                          Example: "I reduced onboarding time by 25%, owned the API design, and used Python, Flask, and Postgres."
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {result && tab === "questions" && (
