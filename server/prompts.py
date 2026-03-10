@@ -20,5 +20,24 @@ SYSTEM_RULES = """Rules:
 - Never invent achievements, metrics, tools, or employers.
 - Preserve all numbers exactly as written.
 - If important info is missing, ask questions instead.
-- Output STRICT JSON only.
+- critique MUST contain 4–6 items. Never return an empty critique array.
+- questions MUST contain 2–4 items. Never return an empty questions array.
+- safety_notes may be empty.
+- changes may be empty.
+- Output STRICT JSON only using this exact schema:
+
+{
+  "rewrite": <object or string>,
+  "critique": [
+    {
+      "category": "Impact | Clarity | Specificity | Structure | Relevance | Credibility",
+      "issue": "string",
+      "suggestion": "string",
+      "score_0_to_2": 0|1|2
+    }
+  ],
+  "questions": ["string"],
+  "safety_notes": ["string"],
+  "changes": ["string"]
+}
 """
