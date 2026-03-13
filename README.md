@@ -17,14 +17,11 @@ RoleLens is a full-stack web application designed to help users explore and inte
 
 **Frontend:**  
 - JavaScript  
-- React (or your chosen frontend library)  
+- React
 - CSS for styling  
 
 **Backend:**  
 - Python / JavaScript (Node.js)  
-- REST API to serve data to frontend  
-- Expandable architecture for additional services
-
 ---
 
 ## Installation Instructions
